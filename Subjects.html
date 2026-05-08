@@ -59,6 +59,7 @@
         padding: 0.5rem 1rem;
         border-radius: 5px;
         transition: background 0.3s;
+        cursor: pointer;
       }
 
       .nav-menu a:hover {
@@ -324,108 +325,33 @@
         font-weight: bold;
       }
 
-      /* Page-specific styles */
-      .page-hero {
-        background: linear-gradient(135deg, #2e7d4a, #4caf50);
-        color: white;
-        padding: 3rem 2rem;
-        border-radius: 15px;
-        text-align: center;
-        margin-bottom: 5rem;
-        margin-top: 15px;
-        flex: 1;
-      }
-
-      .page-title {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        margin-top: 5rem;
-      }
-
-      .page-description {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-      }
-
-      .resources-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
-      }
-
-      .resource-card {
-        background: white;
-        border-radius: 15px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        transition:
-          transform 0.3s,
-          box-shadow 0.3s;
-      }
-
-      .resource-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      }
-
-      .resource-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 10px;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        background: #e3f2fd;
-      }
-
-      .resource-title {
-        font-size: 1.3rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-        color: #333;
-      }
-
-      .resource-description {
-        color: #666;
-        margin-bottom: 1.5rem;
-        font-size: 0.95rem;
-      }
-
-      .resource-button {
-        width: 100%;
-        background: linear-gradient(135deg, #4caf50, #45a049);
-        color: white;
-        border: none;
-        padding: 0.8rem;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-
-      .resource-button:hover {
-        background: linear-gradient(135deg, #45a049, #4caf50);
-      }
-
-      .feature-list {
-        margin: 2rem 0;
-      }
-
-      .feature-list li {
-        margin-bottom: 1rem;
-        padding-left: 1.5rem;
-        position: relative;
-      }
-
-      .feature-list li:before {
-        content: "✓";
-        color: #2e7d4a;
-        font-weight: bold;
-        position: absolute;
+      /* Modal for subject selection */
+      .subject-modal {
+        display: none;
+        position: fixed;
+        top: 0;
         left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .subject-modal-content {
+        background: white;
+        max-width: 500px;
+        width: 90%;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .subject-modal-close {
+        float: right;
+        font-size: 28px;
+        cursor: pointer;
       }
 
       /* Responsive */
@@ -759,6 +685,17 @@
       </div>
     </div>
 
+    <!-- Subject Info Modal -->
+    <div id="subjectInfoModal" class="subject-modal">
+      <div class="subject-modal-content">
+        <span class="subject-modal-close" onclick="closeSubjectModal()">&times;</span>
+        <h2 id="modalSubjectTitle">Mathematics</h2>
+        <p id="modalSubjectDesc">Loading subject information...</p>
+        <p id="modalSubjectStats" style="margin: 15px 0; color: #2e7d4a;"></p>
+        <button onclick="closeSubjectModal()" style="padding: 10px 20px; background: #2e7d4a; color: white; border: none; border-radius: 25px; cursor: pointer;">Close</button>
+      </div>
+    </div>
+
     <!-- Main App Content (Hidden until signed in) -->
     <div id="mainApp" style="display: none">
       <div
@@ -783,10 +720,10 @@
             <div class="logo">Shule AI Plus +</div>
             <nav>
               <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#subjects">Subjects</a></li>
-                <li><a href="#grades">Grades</a></li>
-                <li><a href="#games">Games</a></li>
+                <li><a onclick="showPage('home')">Home</a></li>
+                <li><a onclick="showPage('subjects')">Subjects</a></li>
+                <li><a onclick="showPage('grades')">Grades</a></li>
+                <li><a onclick="showPage('games')">Games</a></li>
                 <li><a href="Worksheets.html">Worksheets</a></li>
                 <li><a href="teachers-hub.html">Teachers Hub</a></li>
                 <li><a href="ParentsHub.html">Parents Hub</a></li>
@@ -798,46 +735,46 @@
 
       <main class="container">
         <!-- Home Page Content -->
-        <div id="home-page" class="page-content">
+        <div id="home-page" class="page-content" style="display: block;">
           <div class="main-layout">
             <aside class="sidebar">
               <div class="filter-section">
                 <h3 class="filter-title">Subjects</h3>
                 <div class="filter-options">
-                  <label><input type="checkbox" /> Mathematics</label>
-                  <label><input type="checkbox" /> English</label>
-                  <label><input type="checkbox" /> Kiswahili</label>
+                  <label><input type="checkbox" class="subject-filter" value="Mathematics" /> Mathematics</label>
+                  <label><input type="checkbox" class="subject-filter" value="English" /> English</label>
+                  <label><input type="checkbox" class="subject-filter" value="Kiswahili" /> Kiswahili</label>
                   <label
-                    ><input type="checkbox" /> Science &amp; Technology</label
+                    ><input type="checkbox" class="subject-filter" value="Science" /> Science &amp; Technology</label
                   >
-                  <label><input type="checkbox" /> Social Studies</label>
-                  <label><input type="checkbox" /> Creative Arts</label>
+                  <label><input type="checkbox" class="subject-filter" value="Social Studies" /> Social Studies</label>
+                  <label><input type="checkbox" class="subject-filter" value="Creative Arts" /> Creative Arts</label>
                   <label
-                    ><input type="checkbox" /> Physical &amp; Health
+                    ><input type="checkbox" class="subject-filter" value="PHE" /> Physical &amp; Health
                     Education</label
                   >
-                  <label><input type="checkbox" /> Life Skills Education</label>
-                  <label><input type="checkbox" /> Agriculture</label>
-                  <label><input type="checkbox" /> Home Science</label>
-                  <label><input type="checkbox" /> Computer Science</label>
-                  <label><input type="checkbox" /> Business Studies</label>
+                  <label><input type="checkbox" class="subject-filter" value="Life Skills" /> Life Skills Education</label>
+                  <label><input type="checkbox" class="subject-filter" value="Agriculture" /> Agriculture</label>
+                  <label><input type="checkbox" class="subject-filter" value="Home Science" /> Home Science</label>
+                  <label><input type="checkbox" class="subject-filter" value="Computer Science" /> Computer Science</label>
+                  <label><input type="checkbox" class="subject-filter" value="Business Studies" /> Business Studies</label>
                 </div>
               </div>
 
               <div class="filter-section">
                 <h3 class="filter-title">Grade Levels</h3>
                 <div class="filter-options">
-                  <label><input type="checkbox" /> Pre-Primary 1 (PP1)</label>
-                  <label><input type="checkbox" /> Pre-Primary 2 (PP2)</label>
-                  <label><input type="checkbox" /> Grade 1</label>
-                  <label><input type="checkbox" /> Grade 2</label>
-                  <label><input type="checkbox" /> Grade 3</label>
-                  <label><input type="checkbox" /> Grade 4</label>
-                  <label><input type="checkbox" /> Grade 5</label>
-                  <label><input type="checkbox" /> Grade 6</label>
-                  <label><input type="checkbox" /> Grade 7 (JSS 1)</label>
-                  <label><input type="checkbox" /> Grade 8 (JSS 2)</label>
-                  <label><input type="checkbox" /> Grade 9 (JSS 3)</label>
+                  <label><input type="checkbox" class="grade-filter" value="PP1" /> Pre-Primary 1 (PP1)</label>
+                  <label><input type="checkbox" class="grade-filter" value="PP2" /> Pre-Primary 2 (PP2)</label>
+                  <label><input type="checkbox" class="grade-filter" value="G1" /> Grade 1</label>
+                  <label><input type="checkbox" class="grade-filter" value="G2" /> Grade 2</label>
+                  <label><input type="checkbox" class="grade-filter" value="G3" /> Grade 3</label>
+                  <label><input type="checkbox" class="grade-filter" value="G4" /> Grade 4</label>
+                  <label><input type="checkbox" class="grade-filter" value="G5" /> Grade 5</label>
+                  <label><input type="checkbox" class="grade-filter" value="G6" /> Grade 6</label>
+                  <label><input type="checkbox" class="grade-filter" value="G7" /> Grade 7 (JSS 1)</label>
+                  <label><input type="checkbox" class="grade-filter" value="G8" /> Grade 8 (JSS 2)</label>
+                  <label><input type="checkbox" class="grade-filter" value="G9" /> Grade 9 (JSS 3)</label>
                 </div>
               </div>
 
@@ -900,9 +837,9 @@
                 </div>
               </div>
 
-              <div class="games-grid">
+              <div class="games-grid" id="gamesGrid">
                 <!-- Mathematics Games -->
-                <div class="game-card">
+                <div class="game-card" data-subject="Mathematics" data-grade="G1-G3">
                   <div class="game-icon" style="background: #e3f2fd">🔢</div>
                   <h3 class="game-title">Hisabati Safari</h3>
                   <p class="game-description">
@@ -916,18 +853,13 @@
                   </div>
                   <button
                     class="play-button"
-                    onclick="
-                      playGame(
-                        'Hisabati Safari',
-                        'games/safari_math_game (3).html',
-                      )
-                    "
+                    onclick="alert('Game starting: Hisabati Safari')"
                   >
                     Play Now
                   </button>
                 </div>
 
-                <div class="game-card">
+                <div class="game-card" data-subject="Mathematics" data-grade="G3-G5">
                   <div class="game-icon" style="background: #f3e5f5">✖️</div>
                   <h3 class="game-title">Multiplication Maasai</h3>
                   <p class="game-description">
@@ -941,20 +873,15 @@
                   </div>
                   <button
                     class="play-button"
-                    onclick="
-                      playGame(
-                        'Multiplication Maasai',
-                        'games/maasai_multiplication_game (1).html',
-                      )
-                    "
+                    onclick="alert('Game starting: Multiplication Maasai')"
                   >
                     Play Now
                   </button>
                 </div>
 
-                <div class="game-card">
+                <div class="game-card" data-subject="Mathematics" data-grade="G4-G6">
                   <div class="game-icon" style="background: #e8f5e8">📐</div>
-                  <h3 class="game-title">Geometry Girafes</h3>
+                  <h3 class="game-title">Geometry Giraffes</h3>
                   <p class="game-description">
                     Learn shapes and angles by building homes for Kenya's
                     wildlife using geometric principles.
@@ -966,19 +893,14 @@
                   </div>
                   <button
                     class="play-button"
-                    onclick="
-                      playGame(
-                        'Geometry Giraffes',
-                        'games/geometry_giraffes_game (1) (2).html',
-                      )
-                    "
+                    onclick="alert('Game starting: Geometry Giraffes')"
                   >
                     Play Now
                   </button>
                 </div>
 
                 <!-- English Games -->
-                <div class="game-card">
+                <div class="game-card" data-subject="English" data-grade="G1-G4">
                   <div class="game-icon" style="background: #fff3e0">📚</div>
                   <h3 class="game-title">English Explorer</h3>
                   <p class="game-description">
@@ -992,18 +914,13 @@
                   </div>
                   <button
                     class="play-button"
-                    onclick="
-                      playGame(
-                        'English Explorer',
-                        'games/kids_english_game (1).html',
-                      )
-                    "
+                    onclick="alert('Game starting: English Explorer')"
                   >
                     Play Now
                   </button>
                 </div>
 
-                <div class="game-card">
+                <div class="game-card" data-subject="English" data-grade="G3-G6">
                   <div class="game-icon" style="background: #e1f5fe">✏️</div>
                   <h3 class="game-title">Grammar Safari</h3>
                   <p class="game-description">
@@ -1015,10 +932,10 @@
                     <span class="tag tag-subject">English</span>
                     <span class="tag tag-cbc">Communication</span>
                   </div>
-                  <button class="play-button">Play Now</button>
+                  <button class="play-button" onclick="alert('Game starting: Grammar Safari')">Play Now</button>
                 </div>
 
-                <div class="game-card">
+                <div class="game-card" data-subject="English" data-grade="All">
                   <div class="game-icon" style="background: #f9fbe7">🗣️</div>
                   <h3 class="game-title">Pronunciation Palace</h3>
                   <p class="game-description">
@@ -1030,743 +947,45 @@
                     <span class="tag tag-subject">English</span>
                     <span class="tag tag-cbc">Digital Literacy</span>
                   </div>
-                  <button class="play-button">Play Now</button>
+                  <button class="play-button" onclick="alert('Game starting: Pronunciation Palace')">Play Now</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-       <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>EduPlay Kenya | Voice-Active Learning + PDF Syllabus Worksheets</title>
-  <!-- Improved PDF library: jspdf + html2canvas for reliable rendering -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-    }
 
-    body {
-      background: linear-gradient(145deg, #f6f9fc 0%, #eef2f7 100%);
-      min-height: 100vh;
-    }
-
-    .app-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    .hero {
-      background: linear-gradient(135deg, #1e4b6e, #0a2f44);
-      border-radius: 2rem;
-      padding: 1.5rem 2rem;
-      margin-bottom: 2rem;
-      color: white;
-      box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
-    }
-
-    .hero h1 { font-size: 2rem; letter-spacing: -0.5px; }
-    .hero p { opacity: 0.9; margin-top: 0.4rem; }
-
-    .grade-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1.2rem;
-      justify-content: center;
-    }
-
-    .grade-btn {
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(4px);
-      border: none;
-      color: white;
-      font-weight: bold;
-      font-size: 1.1rem;
-      padding: 0.6rem 1.3rem;
-      border-radius: 3rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .grade-btn.active {
-      background: #ffb74d;
-      color: #1e2a3a;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-      transform: scale(1.02);
-    }
-
-    .grade-btn:hover:not(.active) { background: rgba(255,255,255,0.3); }
-
-    .subject-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.6rem;
-      margin: 2rem 0 3rem;
-    }
-
-    .subject-card {
-      background: white;
-      border-radius: 1.8rem;
-      padding: 1.5rem;
-      transition: all 0.25s ease;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-      cursor: pointer;
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .subject-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 25px 30px -12px rgba(0,0,0,0.2);
-    }
-
-    .subject-icon {
-      font-size: 2.5rem;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 1.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .subject-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #0f2b3d;
-    }
-
-    .subject-stats {
-      color: #3a6b8c;
-      font-weight: 500;
-      margin: 0.3rem 0 0.7rem;
-      font-size: 0.9rem;
-    }
-
-    .resource-description {
-      color: #2c3e44;
-      line-height: 1.4;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .subject-button {
-      background: #f0f4f9;
-      border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      color: #1e4b6e;
-      cursor: pointer;
-      transition: 0.2s;
-      width: 100%;
-    }
-
-    .subject-button:hover {
-      background: #1e4b6e;
-      color: white;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-    }
-
-    .modal-card {
-      background: white;
-      max-width: 800px;
-      width: 100%;
-      border-radius: 2rem;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 1.8rem;
-      box-shadow: 0 25px 50px -12px black;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.2rem;
-      flex-wrap: wrap;
-    }
-
-    .close-modal {
-      font-size: 2rem;
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-weight: bold;
-    }
-
-    .question-text {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: #eef2ff;
-      padding: 1.2rem;
-      border-radius: 1.5rem;
-      margin: 1rem 0;
-    }
-
-    .options-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-      gap: 0.8rem;
-      margin: 1.5rem 0;
-    }
-
-    .option-btn {
-      background: #f1f5f9;
-      border: 2px solid #cbd5e1;
-      padding: 0.8rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.1s;
-    }
-
-    .voice-controls {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin: 1rem 0;
-      flex-wrap: wrap;
-    }
-
-    .voice-btn {
-      background: linear-gradient(135deg, #3b82f6, #1e3a8a);
-      border: none;
-      color: white;
-      padding: 0.7rem 1.5rem;
-      border-radius: 3rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: 0.2s;
-    }
-
-    .voice-btn.listening {
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      animation: pulse 1.2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.05); opacity: 0.9; }
-    }
-
-    .level-badge {
-      background: #0f2b3d;
-      color: white;
-      display: inline-block;
-      padding: 0.3rem 1rem;
-      border-radius: 2rem;
-      font-size: 0.8rem;
-    }
-
-    .worksheet-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
-
-    .worksheet-item {
-      background: #f8fafc;
-      border-radius: 1rem;
-      padding: 1rem;
-      border-left: 6px solid #ffb74d;
-      text-align: left;
-    }
-
-    .download-pdf {
-      background: #d32f2f;
-      color: white;
-      border: none;
-      padding: 0.5rem 1.2rem;
-      border-radius: 2rem;
-      margin-top: 0.6rem;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .feedback {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-
-    @media (max-width: 640px) {
-      .subject-grid { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 1.5rem; }
-      .question-text { font-size: 1.2rem; }
-    }
-  </style>
-</head>
-<body>
-<div class="app-container">
-  <div class="hero">
-    <h1>🎙️ EduPlay Kenya — Voice + PDF Syllabus Worksheets</h1>
-    <p>📘 Worksheets = Real syllabus content per grade (Kenya CBC). Click Download PDF — content will appear clearly!</p>
-    <div class="grade-bar" id="gradeSelector"></div>
-  </div>
-  <div class="subject-grid" id="subjectGrid"></div>
-</div>
-
-<!-- GAME MODAL -->
-<div id="gameModal" class="modal">
-  <div class="modal-card">
-    <div class="modal-header">
-      <h2 id="gameSubjectTitle">Math Game</h2>
-      <button class="close-modal" id="closeGameModal">&times;</button>
-    </div>
-    <div class="game-area" id="gameContent"></div>
-  </div>
-</div>
-
-<!-- WORKSHEET MODAL -->
-<div id="worksheetModal" class="modal">
-  <div class="modal-card">
-    <div class="modal-header">
-      <h2 id="wsSubjectTitle">Syllabus Worksheets (PDF)</h2>
-      <button class="close-modal" id="closeWsModal">&times;</button>
-    </div>
-    <div class="worksheet-area" id="worksheetContent"></div>
-  </div>
-</div>
-
-<script>
-  // ---------- VOICE UTILITIES ----------
-  let speechUtterance = null;
-  function speakText(message) {
-    if (!window.speechSynthesis) return;
-    if (speechUtterance) window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(message);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
-    window.speechSynthesis.speak(utterance);
-    speechUtterance = utterance;
-  }
-
-  let recognition = null;
-  let isListening = false;
-  let currentVoiceCallback = null;
-
-  function initSpeechRecognition() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) return null;
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recog = new SpeechRecognition();
-    recog.continuous = false;
-    recog.interimResults = false;
-    recog.lang = 'en-US';
-    recog.onresult = (event) => {
-      const transcript = event.results[0][0].transcript.trim().toLowerCase();
-      if (currentVoiceCallback) currentVoiceCallback(transcript);
-      currentVoiceCallback = null;
-      stopVoiceListening();
-    };
-    recog.onerror = () => { stopVoiceListening(); if(currentVoiceCallback) currentVoiceCallback = null; };
-    recog.onend = () => { isListening = false; const btn = document.getElementById('voiceMicBtn'); if(btn) btn.classList.remove('listening'); };
-    return recog;
-  }
-
-  function startVoiceListening(callback) {
-    if (!recognition) { recognition = initSpeechRecognition(); if(!recognition) { speakText("Voice not supported"); return false; } }
-    if (isListening) stopVoiceListening();
-    currentVoiceCallback = callback;
-    try { recognition.start(); isListening = true; const btn = document.getElementById('voiceMicBtn'); if(btn) btn.classList.add('listening'); return true; } 
-    catch(e) { return false; }
-  }
-  function stopVoiceListening() { if(recognition && isListening) { try { recognition.stop(); } catch(e){} isListening = false; } }
-
-  // ---------- SUBJECTS ----------
-  const subjects = [
-    { id: "math", name: "Mathematics", icon: "🔢", bg: "#e3f2fd", desc: "Numbers, algebra, geometry, measurement.", gamesCount:24, wsCount:156 },
-    { id: "english", name: "English", icon: "📚", bg: "#fff3e0", desc: "Grammar, reading, writing, comprehension.", gamesCount:18, wsCount:142 },
-    { id: "kiswahili", name: "Kiswahili", icon: "🇰🇪", bg: "#e8f5e8", desc: "Sarufi, ushairi, fasihi simulizi.", gamesCount:15, wsCount:98 },
-    { id: "science", name: "Science & Technology", icon: "🔬", bg: "#e0f2f1", desc: "Living things, matter, energy, tech.", gamesCount:22, wsCount:124 },
-    { id: "social", name: "Social Studies", icon: "🗺️", bg: "#fff8e1", desc: "History, geography, civics, Kenyan heritage.", gamesCount:12, wsCount:87 },
-    { id: "arts", name: "Creative Arts", icon: "🎨", bg: "#f3e5f5", desc: "Music, drama, visual arts, Kenyan culture.", gamesCount:16, wsCount:76 },
-    { id: "phe", name: "Physical & Health Education", icon: "🏃", bg: "#f9fbe7", desc: "Sports, nutrition, personal hygiene.", gamesCount:8, wsCount:54 },
-    { id: "lifeskills", name: "Life Skills Education", icon: "💡", bg: "#e1f5fe", desc: "Values, empathy, decision making.", gamesCount:14, wsCount:68 },
-    { id: "agriculture", name: "Agriculture", icon: "🌱", bg: "#fff3e0", desc: "Crop farming, livestock, environment.", gamesCount:10, wsCount:42 },
-    { id: "homescience", name: "Home Science", icon: "🏠", bg: "#e8f5e8", desc: "Foods, textiles, home management.", gamesCount:9, wsCount:38 },
-    { id: "computers", name: "Computer Science", icon: "💻", bg: "#e3f2fd", desc: "Digital skills, coding basics.", gamesCount:17, wsCount:63 },
-    { id: "business", name: "Business Studies", icon: "📊", bg: "#f3e5f5", desc: "Entrepreneurship, money, markets.", gamesCount:11, wsCount:47 }
-  ];
-
-  // ----- COMPLETE SYLLABUS CONTENT (REAL CURRICULUM PER GRADE) -----
-  function getFullSyllabusContent(subjectId, grade, levelNumber) {
-    const subjectName = subjects.find(s=>s.id===subjectId)?.name || subjectId;
-    const gradeNum = grade;
-    const levelDesc = levelNumber === 1 ? "Foundation" : levelNumber === 2 ? "Intermediate" : levelNumber === 3 ? "Advanced" : "Mastery";
-    
-    // Detailed syllabus mapping for each subject and grade (Kenya CBC-inspired)
-    const syllabusDatabase = {
-      math: {
-        1: "• Number concepts: Counting 1-20, number names, matching quantities\n• Addition and subtraction within 10\n• Basic shapes (circle, square, triangle, rectangle)\n• Measurement:长短, heavy/light\n• Patterns and sorting",
-        2: "• Place value: ones, tens up to 100\n• Addition & subtraction within 100\n• Introduction to multiplication (groups of)\n• Time: hours, half-hours\n• Money: Kenyan coins and notes up to 100 shillings",
-        3: "• Fractions: halves, quarters, thirds\n• Multiplication tables 2,3,4,5,10\n• Division sharing equally\n• Measurement: length (cm,m), mass (kg,g), capacity (l)\n• 2D and 3D shapes properties",
-        4: "• Multiplication tables 6-9\n• Division with remainders\n• Decimals: tenths and hundredths\n• Area and perimeter of rectangles\n• Data handling: bar graphs, pictographs",
-        5: "• Fractions: equivalent, addition/subtraction\n• Decimals and percentages\n• Angles: acute, obtuse, right angles\n• Algebraic expressions: simple equations\n• Volume and capacity",
-        6: "• Ratio and proportion\n• Integers: positive and negative numbers\n• Equations with one unknown\n• Statistics: mean, median, mode\n• Probability: likely, unlikely, certain",
-        7: "• Algebraic expressions and simplification\n• Linear equations in one variable\n• Geometry: circles, construction\n• Scale drawing and maps\n• Financial mathematics: profit, loss, discount"
-      },
-      english: {
-        1: "• Alphabet recognition and phonics\n• Simple sentences (Subject + Verb + Object)\n• Vocabulary building: family, school, home\n• Comprehension: short passages with pictures\n• Listening and speaking: rhymes and songs",
-        2: "• Nouns, verbs, adjectives identification\n• Sentence construction (statement, question)\n• Reading fluency: 30-50 words per minute\n• Punctuation: capital letter, full stop, question mark\n• Writing simple paragraphs (3-4 sentences)",
-        3: "• Tenses: present, past, future simple\n• Parts of speech: pronouns, prepositions\n• Story writing: beginning, middle, end\n• Comprehension: inferential questions\n• Dictionary skills",
-        4: "• Paragraph writing: topic sentence, details\n• Synonyms, antonyms, homophones\n• Reported speech (basic)\n• Active and passive voice introduction\n• Poetry: rhyme scheme, imagery",
-        5: "• Essay writing: narrative, descriptive\n• Idioms and proverbs\n• Punctuation: comma, apostrophe, quotation marks\n• Fact vs opinion\n• Oral literature: myths, legends",
-        6: "• Complex sentences: clauses\n• Summary writing\n• Debate skills: argument structure\n• Formal and informal letters\n• Literary devices: simile, metaphor, personification",
-        7: "• Composition: persuasive, expository\n• Critical analysis of texts\n• Advanced grammar: conditionals, conjunctions\n• Research skills: citing sources\n• Public speaking and presentation"
-      },
-      kiswahili: {
-        1: "• Herufi za alfabeti na sauti\n• Maneno ya msingi: majina ya vitu, familia\n• Sentensi rahisi: Nina, Una\n• Kusoma hadithi fupi\n• Uandishi wa herufi na nambari",
-        2: "• Vivumishi vya sifa na idadi\n• Vitenzi: kitendo cha sasa na zamani\n• Ngeli za A-WA, KI-VI\n• Kusoma kwa sauti na ufahamu\n• M ethali na nahau rahisi",
-        3: "• Nyakati: -li-, -ta-, -me-\n• Uakifishaji: kipenyo, alama za kuuliza\n• Uandishi wa insha fupi (150-200 maneno)\n• Viambishi vya nafsi\n• Fasihi simulizi: hadithi za wanyama",
-        4: "• Vitenzi vishirikishi\n• Viwango vya ushairi (tashbihi, istiara)\n• Tamthilia: wahusika, maudhui\n• Barua rasmi na zisizo rasmi\n• Uchambuzi wa mashairi",
-        5: "• Usemi wa taarifa\n• Viungo (kwa kuwa, ingawa, kama)\n• Tungo za mafumbo\n• Tathmini ya kazi za fasihi\n• Uandishi wa makala",
-        6: "• Nahau na methali za kina\n• Fasihi simulizi: nyimbo za kazi, visawe\n• Usomi wa riwaya\n• Mjadala na usemaji\n• Uhakiki wa tamthilia",
-        7: "• Lugha ya kisanaa\n• Uchambuzi wa riwaya na tamthilia\n• Uandishi wa insha za kitaaluma\n• Utumizi wa vitendawili na misemo\n• Maana ya kina katika mashairi"
-      },
-      science: {
-        1: "• Living and non-living things\n• Plants: parts and uses\n• Animals: domestic and wild\n• Weather: sunny, rainy, cloudy\n• Simple machines: seesaw, slide",
-        2: "• Human body: external parts\n• Soil: types and uses\n• Air: presence and uses\n• Light and shadows\n• Water: sources and uses",
-        3: "• States of matter: solid, liquid, gas\n• Energy: heat, light, sound\n• Animal habitats and adaptation\n• Plant growth and germination\n• Magnets: attraction and repulsion",
-        4: "• Digestive system\n• Conductors and insulators\n• Food chains and webs\n• Ecosystems: ponds, forests\n• Simple electric circuits",
-        5: "• Forces: gravity, friction\n• Plant reproduction: flowers, seeds\n• Human circulatory system\n• Mixtures and separation\n• Renewable and non-renewable energy",
-        6: "• Solar system: planets, stars\n• Acids and bases (basic concepts)\n• Genetics: traits and heredity\n• Environmental conservation\n• Microorganisms: helpful and harmful",
-        7: "• Cell structure and functions\n• Chemical reactions (simple)\n• Human reproductive system\n• Biotechnology basics\n• Climate change and mitigation"
-      },
-      social: {
-        1: "• My family and extended family\n• Our school: people and places\n• Community helpers (doctor, teacher, police)\n• Kenya flag and national symbols\n• Maps: my classroom, my home",
-        2: "• Our county: name, leaders, services\n• Weather and climate in our region\n• Early communities in Kenya\n• Food production: crops and livestock\n• Respect for elders and traditions",
-        3: "• Historical sites: Fort Jesus, Gedi ruins\n• National holidays: Jamhuri, Madaraka\n• Leadership: chiefs, councilors, governors\n• Resources: water, forest, minerals\n• Kenyan cultures: languages, ceremonies",
-        4: "• Kenya's 47 counties and their capitals\n• Government: national and county levels\n• Trade: local, regional, international\n• Agriculture: cash crops, food crops\n• Heroes and heroines of Kenya",
-        5: "• Colonial history: scramble for Africa\n• Independence struggle: Mau Mau, pioneers\n• The Kenyan constitution (2010)\n• Democracy and human rights\n• Economic activities: tourism, industry",
-        6: "• African Union and regional cooperation\n• Globalization: effects on Kenya\n• Natural resources management\n• Population and urbanization\n• Peace and conflict resolution",
-        7: "• Civic rights and responsibilities\n• Parliament: composition and role\n• Judiciary and rule of law\n• International organizations (UN, AU)\n• Sustainable Development Goals"
-      }
-    };
-    
-    let syllabusText = syllabusDatabase[subjectId]?.[gradeNum] || 
-      `• Core competencies in ${subjectName} for Grade ${gradeNum}\n• Critical thinking and problem solving\n• Communication and collaboration\n• Digital literacy integration\n• CBC learning outcomes`;
-    
-    // Add level-specific depth
-    const levelTasks = {
-      1: "\n\n📖 LEVEL 1 FOCUS: Basic understanding and recall of key concepts.",
-      2: "\n\n📖 LEVEL 2 FOCUS: Application and analysis of syllabus topics.",
-      3: "\n\n📖 LEVEL 3 FOCUS: Synthesis and evaluation of complex ideas.",
-      4: "\n\n📖 LEVEL 4 FOCUS: Mastery, creation, and real-world project work."
-    };
-    
-    return syllabusText + levelTasks[levelNumber];
-  }
-
-  // ----- RELIABLE PDF GENERATION using html2canvas + jsPDF -----
-  async function downloadPDF(subjectId, grade, level) {
-    const subject = subjects.find(s=>s.id===subjectId);
-    const subjectName = subject.name;
-    const syllabusContent = getFullSyllabusContent(subjectId, grade, level);
-    const levelNames = {1:"Foundation",2:"Intermediate",3:"Advanced",4:"Mastery"};
-    
-    // Create a styled div for PDF rendering
-    const pdfContainer = document.createElement('div');
-    pdfContainer.style.width = '800px';
-    pdfContainer.style.backgroundColor = 'white';
-    pdfContainer.style.padding = '40px';
-    pdfContainer.style.fontFamily = 'Segoe UI, Arial, sans-serif';
-    pdfContainer.style.borderRadius = '0px';
-    pdfContainer.style.position = 'absolute';
-    pdfContainer.style.left = '-9999px';
-    pdfContainer.style.top = '0';
-    
-    pdfContainer.innerHTML = `
-      <div style="margin-bottom: 30px; border-bottom: 3px solid #ffb74d; padding-bottom: 15px;">
-        <h1 style="color: #1e4b6e; margin-bottom: 5px;">📘 ${subjectName} Worksheet</h1>
-        <h2 style="color: #0a2f44; margin-top: 5px;">Grade ${grade} – ${levelNames[level]} Level (${level}/4)</h2>
-        <p style="color: #2c3e44; margin-top: 10px;"><strong>Kenya CBC Syllabus Aligned | Competency-Based Curriculum</strong></p>
-      </div>
-      
-      <div style="background: #eef2ff; padding: 16px; border-radius: 12px; margin: 20px 0;">
-        <h3 style="color: #1e4b6e;">📖 Syllabus Coverage:</h3>
-        <pre style="white-space: pre-wrap; font-family: 'Segoe UI', Arial; font-size: 14px; line-height: 1.6;">${syllabusContent}</pre>
-      </div>
-      
-      <div style="margin: 25px 0 20px 0;">
-        <h3 style="color: #1e4b6e; border-left: 4px solid #ffb74d; padding-left: 12px;">📝 Learning Activities</h3>
-        
-        <div style="background: #f9f9ff; padding: 12px; margin: 12px 0; border-radius: 8px;">
-          <strong>Task 1 (Knowledge Recall):</strong><br/>
-          • List 5 key topics from the syllabus above and define each one.<br/>
-          • Explain how these topics relate to your daily life in Kenya.
+        <!-- Subjects Page -->
+        <div id="subjects-page" class="page-content" style="display: none;">
+          <div class="page-hero">
+            <h1 class="page-title">All Subjects</h1>
+            <p class="page-description">Explore our complete range of CBC-aligned subjects</p>
+          </div>
+          <div class="resources-grid" id="subjectsGrid">
+            <!-- Subjects will be populated by JavaScript -->
+          </div>
         </div>
-        
-        <div style="background: #f9f9ff; padding: 12px; margin: 12px 0; border-radius: 8px;">
-          <strong>Task 2 (Critical Thinking & Application):</strong><br/>
-          • ${level === 1 ? "Describe a simple problem in your community that can be solved using what you learned." : 
-             level === 2 ? "Analyze a real-world situation where these concepts apply. Propose a solution." :
-             level === 3 ? "Evaluate different approaches to a challenge related to this subject. Which works best and why?" :
-             "Create a detailed project plan that demonstrates mastery of this syllabus. Include objectives, steps, and expected outcomes."}
+
+        <!-- Grades Page -->
+        <div id="grades-page" class="page-content" style="display: none;">
+          <div class="page-hero">
+            <h1 class="page-title">Grade Levels</h1>
+            <p class="page-description">Content tailored for each grade under CBC curriculum</p>
+          </div>
+          <div class="resources-grid" id="gradesGrid">
+            <!-- Grades will be populated by JavaScript -->
+          </div>
         </div>
-        
-        <div style="background: #f9f9ff; padding: 12px; margin: 12px 0; border-radius: 8px;">
-          <strong>Task 3 (Creative Expression):</strong><br/>
-          • Draw, design, or write a story that shows understanding of this subject. Use examples from Kenyan culture.
+
+        <!-- Games Page -->
+        <div id="games-page" class="page-content" style="display: none;">
+          <div class="page-hero">
+            <h1 class="page-title">Educational Games</h1>
+            <p class="page-description">Learn through play with our interactive games</p>
+          </div>
+          <div class="games-grid" id="allGamesGrid">
+            <!-- All games will be shown here -->
+          </div>
         </div>
-        
-        <div style="background: #f9f9ff; padding: 12px; margin: 12px 0; border-radius: 8px;">
-          <strong>Task 4 (Self-Assessment & Reflection):</strong><br/>
-          • Write 3 quiz questions based on the syllabus.<br/>
-          • After answering, reflect: What was easy? What was challenging? What will you study more?
-        </div>
-      </div>
-      
-      <div style="margin-top: 35px; padding-top: 15px; border-top: 1px solid #ddd; text-align: center; color: #6c757d; font-size: 12px;">
-        <p>📚 EduPlay Kenya — Voice-Active Learning Platform</p>
-        <p>Worksheet generated on ${new Date().toLocaleDateString()} | Grade ${grade} ${subjectName} | Level ${level}</p>
-      </div>
-    `;
-    
-    document.body.appendChild(pdfContainer);
-    
-    try {
-      // Show loading indicator
-      const btn = event?.target;
-      const originalText = btn?.innerText;
-      if(btn) btn.innerText = "⏳ Generating PDF...";
-      
-      const canvas = await html2canvas(pdfContainer, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        logging: false,
-        useCORS: false
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
-      
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      
-      pdf.save(`${subjectName}_Grade${grade}_Level${level}_Syllabus.pdf`);
-      
-      if(btn) btn.innerText = originalText;
-    } catch (error) {
-      console.error('PDF error:', error);
-      alert("PDF generation failed, but you can try again. Make sure you're online.");
-      if(btn) btn.innerText = "📥 Download PDF (Syllabus Based)";
-    } finally {
-      document.body.removeChild(pdfContainer);
-    }
-  }
-
-  // ---------- GAME LOGIC (Voice Enabled) ----------
-  function generateQuestionBank(grade, level, subjectId) {
-    const questions = [];
-    for (let i = 1; i <= 30; i++) {
-      let questionText = "", correct = "", options = [];
-      if (subjectId === "math") {
-        let a = Math.floor(Math.random() * (10 + grade * 3)) + 1;
-        let b = Math.floor(Math.random() * (10 + grade * 2)) + 1;
-        if (grade <= 2) {
-          if (level <= 2) { a = Math.min(a,12); b = Math.min(b,12); questionText = `${a} + ${b} = ?`; correct = (a+b).toString(); }
-          else { questionText = `${a} - ${b%a+1} = ?`; correct = (a - (b%a+1)).toString(); }
-        } else if (grade <= 4) {
-          let op = ["×","+"][i%2];
-          if(op === "×"){ let x = Math.floor(Math.random()*8)+2; let y = Math.floor(Math.random()*8)+2; questionText = `${x} × ${y}`; correct = (x*y).toString();}
-          else{ correct = (a+b).toString(); questionText = `${a} + ${b}`;}
-        } else {
-          let op = ["×","÷","+"][i%3];
-          if(op === "×"){ let x = Math.floor(Math.random()*12)+3; let y = Math.floor(Math.random()*12)+2; correct=(x*y).toString(); questionText=`${x} × ${y}`;}
-          else if(op === "÷"){ let divisor = Math.floor(Math.random()*8)+2; let quotient = Math.floor(Math.random()*12)+2; correct=quotient.toString(); questionText=`${divisor*quotient} ÷ ${divisor}`;}
-          else{ let big = Math.floor(Math.random()*70)+20; let small = Math.floor(Math.random()*40)+1; correct=(big+small).toString(); questionText=`${big} + ${small}`;}
-        }
-        let correctNum = parseInt(correct);
-        options = [correct, correctNum+1, Math.max(1,correctNum-1), correctNum+2].map(String);
-        options = [...new Set(options)].slice(0,4);
-        while(options.length<4) options.push((correctNum+1).toString());
-        options = options.sort(()=>Math.random()-0.5);
-      } else {
-        questionText = `${subjects.find(s=>s.id===subjectId)?.name} Challenge: What key skill do you learn in Grade ${grade} ${subjectId}?`;
-        correct = "Problem solving";
-        options = ["Problem solving", "Memorization", "Handwriting", "Running"];
-      }
-      if(!options.includes(correct)) options[0]=correct;
-      questions.push({ text: questionText, correctAnswer: correct, options: options });
-    }
-    return questions;
-  }
-
-  let currentGameState = { grade:1, subjectId:"math", level:1, questions:[], currentIndex:0, score:0, answersGiven:0 };
-  let selectedGrade = 1;
-  
-  function renderGradeSelector() {
-    const container = document.getElementById("gradeSelector");
-    container.innerHTML = "";
-    for(let g=1; g<=7; g++) {
-      const btn = document.createElement("button");
-      btn.className = `grade-btn ${selectedGrade === g ? "active" : ""}`;
-      btn.textContent = `Grade ${g}`;
-      btn.addEventListener("click", () => { selectedGrade = g; renderGradeSelector(); renderSubjects(); });
-      container.appendChild(btn);
-    }
-  }
-
-  function renderSubjects() {
-    const grid = document.getElementById("subjectGrid");
-    grid.innerHTML = "";
-    subjects.forEach(sub => {
-      const card = document.createElement("div");
-      card.classList.add("subject-card");
-      card.innerHTML = `
-        <div class="subject-icon" style="background: ${sub.bg}">${sub.icon}</div>
-        <h3 class="subject-title">${sub.name}</h3>
-        <p class="subject-stats">${sub.gamesCount} games • ${sub.wsCount} worksheets</p>
-        <p class="resource-description">${sub.desc}</p>
-        <button class="subject-button" data-subject="${sub.id}" data-action="game">🎮 Play Game (Voice)</button>
-        <button class="subject-button" data-subject="${sub.id}" data-action="ws" style="margin-top:8px; background:#e6f4ea;">📄 PDF Syllabus Worksheets</button>
-      `;
-      grid.appendChild(card);
-    });
-    document.querySelectorAll(".subject-button").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const subjectId = btn.dataset.subject;
-        const action = btn.dataset.action;
-        if(action === "game") launchGame(subjectId);
-        else launchWorksheets(subjectId);
-      });
-    });
-  }
-
-  function launchGame(subjectId) {
-    const grade = selectedGrade;
-    const questions = generateQuestionBank(grade, 1, subjectId);
-    currentGameState = { grade, subjectId, level:1, questions, currentIndex:0, score:0, answersGiven:0, gameActive:true };
-    document.getElementById("gameSubjectTitle").innerHTML = `${subjects.find(s=>s.id===subjectId)?.name} | Grade ${grade} | Level 1/4 🎤`;
-    renderGameModal();
-    document.getElementById("gameModal").style.display = "flex";
-  }
-
-  function handleAnswer(selected, correct, isVoice = false) {
-    const isCorrect = (isVoice ? selected.toLowerCase().trim() === correct.toLowerCase().trim() : selected === correct);
-    if(isCorrect) { speakText("Correct!"); currentGameState.score++; document.getElementById("gameFeedback").innerHTML = "✅ Correct!"; }
-    else { speakText("Wrong answer"); document.getElementById("gameFeedback").innerHTML = `❌ Wrong! Correct: ${correct}`; }
-    currentGameState.currentIndex++;
-    currentGameState.answersGiven++;
-    if(currentGameState.currentIndex >= 30) renderGameModal();
-    else renderGameModal();
-  }
-
-  function renderGameModal() {
-    const gameDiv = document.getElementById("gameContent");
-    const state = currentGameState;
-    if(state.currentIndex >= 30) {
-      const passed = state.score >= 20;
-      let nextHtml = `<div class="level-badge">Level ${state.level} finished</div><div>Score: ${state.score}/30 (Need 20 to advance)</div>`;
-      if(passed && state.level<4) nextHtml += `<button class="next-level-btn" id="nextLevelBtn" style="background:#2b7a4b; margin:10px;">➡️ Next Level ${state.level+1}</button>`;
-      else if(passed && state.level===4) nextHtml += `<div style="background:#c8e6c9; padding:1rem;">🏆 MASTERY! Completed Grade ${state.grade}!</div>`;
-      else nextHtml += `<button class="restart-game" id="restartLevelBtn" style="background:#d32f2f;">🔄 Restart Level</button>`;
-      nextHtml += `<button class="restart-game" id="closeGameOnly" style="background:#5a626e; margin-left:10px;">Close</button>`;
-      gameDiv.innerHTML = nextHtml;
-      document.getElementById("nextLevelBtn")?.addEventListener("click",()=>{ const newLvl=state.level+1; const newQ=generateQuestionBank(state.grade,newLvl,state.subjectId); currentGameState={...state,level:newLvl,questions:newQ,currentIndex:0,score:0,answersGiven:0}; renderGameModal(); });
-      document.getElementById("restartLevelBtn")?.addEventListener("click",()=>{ const newQ=generateQuestionBank(state.grade,state.level,state.subjectId); currentGameState={...state,questions:newQ,currentIndex:0,score:0,answersGiven:0}; renderGameModal(); });
-      document.getElementById("closeGameOnly")?.addEventListener("click",()=>closeModal("gameModal"));
-      return;
-    }
-    const q = state.questions[state.currentIndex];
-    gameDiv.innerHTML = `
-      <div><span class="level-badge">Level ${state.level} | Q${state.currentIndex+1}/30</span> <span style="float:right">⭐ ${state.score}</span></div>
-      <div class="question-text">${q.text}</div>
-      <div class="voice-controls"><button id="voiceMicBtn" class="voice-btn">🎤 Voice Answer</button><span id="voiceStatus" style="margin-left:10px;"></span></div>
-      <div class="options-grid" id="optionsGrid"></div>
-      <div class="feedback" id="gameFeedback"></div>
-    `;
-    const optsDiv = document.getElementById("optionsGrid");
-    q.options.forEach(opt => { const btn = document.createElement("button"); btn.className="option-btn"; btn.textContent=opt; btn.onclick=()=>handleAnswer(opt, q.correctAnswer, false); optsDiv.appendChild(btn); });
-    document.getElementById("voiceMicBtn").onclick = () => startVoiceListening((spoken)=>handleAnswer(spoken, q.correctAnswer, true));
-  }
-
-  function launchWorksheets(subjectId) {
-    const grade = selectedGrade;
-    const subject = subjects.find(s=>s.id===subjectId);
-    document.getElementById("wsSubjectTitle").innerHTML = `${subject.name} | Grade ${grade} | Syllabus PDF Worksheets`;
-    const container = document.getElementById("worksheetContent");
-    let levelsHtml = `<div class="worksheet-list">`;
-    for(let lvl=1; lvl<=4; lvl++) {
-      const levelName = lvl===1?"Foundation":lvl===2?"Intermediate":lvl===3?"Advanced":"Mastery";
-      levelsHtml += `
-        <div class="worksheet-item">
-          <strong>📘 Level ${lvl} Worksheet — ${levelName}</strong>
-          <p style="font-size:0.9rem; margin-top:5px;">Covers: ${getFullSyllabusContent(subjectId, grade, lvl).substring(0,120)}...</p>
-          <button class="download-pdf" data-level="${lvl}">📥 Download PDF Worksheet (Full Syllabus)</button>
-        </div>
-      `;
-    }
-    levelsHtml += `</div>`;
-    container.innerHTML = levelsHtml;
-    document.querySelectorAll(".download-pdf").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        const level = parseInt(btn.dataset.level);
-        await downloadPDF(subjectId, grade, level);
-      });
-    });
-    document.getElementById("worksheetModal").style.display = "flex";
-  }
-
-  function closeModal(modalId) {
-    document.getElementById(modalId).style.display = "none";
-    if(modalId === "gameModal") stopVoiceListening();
-  }
-
-  window.onload = () => {
-    renderGradeSelector();
-    renderSubjects();
-    document.getElementById("closeGameModal").onclick = () => closeModal("gameModal");
-    document.getElementById("closeWsModal").onclick = () => closeModal("worksheetModal");
-    window.onclick = (e) => { if(e.target === document.getElementById("gameModal")) closeModal("gameModal"); if(e.target === document.getElementById("worksheetModal")) closeModal("worksheetModal"); };
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) recognition = initSpeechRecognition();
-  };
-</script>
-</body>
-</html>
       </main>
 
       <footer class="footer">
@@ -1874,45 +1093,223 @@
     </div>
 
     <script>
-      // Simple page routing for demonstration
-      document.addEventListener("DOMContentLoaded", function () {
-        // Get current page from URL or default to home
-        const urlParams = new URLSearchParams(window.location.search);
-        const page = urlParams.get("page") || "home";
+      // Subject data for the subjects page
+      const subjectsData = [
+        { name: "Mathematics", icon: "🔢", bg: "#e3f2fd", desc: "Develop numeracy, problem-solving, and logical thinking skills through interactive games and activities.", games: 24, worksheets: 156 },
+        { name: "English", icon: "📚", bg: "#fff3e0", desc: "Build literacy, communication, and comprehension skills with engaging stories and language games.", games: 18, worksheets: 142 },
+        { name: "Kiswahili", icon: "🇰🇪", bg: "#e8f5e8", desc: "Master Kenya's national language through cultural stories, vocabulary games, and conversation practice.", games: 15, worksheets: 98 },
+        { name: "Science & Technology", icon: "🔬", bg: "#e0f2f1", desc: "Explore the natural world, conduct virtual experiments, and learn about technology applications.", games: 22, worksheets: 124 },
+        { name: "Social Studies", icon: "🗺️", bg: "#fff8e1", desc: "Learn about Kenyan history, geography, government, and citizenship through interactive activities.", games: 12, worksheets: 87 },
+        { name: "Creative Arts", icon: "🎨", bg: "#f3e5f5", desc: "Express creativity through music, art, drama, and dance activities inspired by Kenyan culture.", games: 16, worksheets: 76 },
+        { name: "Physical & Health Education", icon: "🏃", bg: "#f9fbe7", desc: "Promote physical fitness, health awareness, and sports skills through interactive activities.", games: 8, worksheets: 54 },
+        { name: "Life Skills Education", icon: "💡", bg: "#e1f5fe", desc: "Develop essential life skills, values, and character education for personal and social development.", games: 14, worksheets: 68 },
+        { name: "Agriculture", icon: "🌱", bg: "#fff3e0", desc: "Learn about farming, food production, and environmental conservation through practical activities.", games: 10, worksheets: 42 },
+        { name: "Home Science", icon: "🏠", bg: "#e8f5e8", desc: "Develop practical skills for home management, nutrition, and family well-being.", games: 9, worksheets: 38 },
+        { name: "Computer Science", icon: "💻", bg: "#e3f2fd", desc: "Build digital literacy, coding skills, and understanding of technology in modern society.", games: 17, worksheets: 63 },
+        { name: "Business Studies", icon: "📊", bg: "#f3e5f5", desc: "Learn about entrepreneurship, finance, and business concepts through practical simulations.", games: 11, worksheets: 47 }
+      ];
 
-        // Show the appropriate page
-        showPage(page);
+      const gradesData = [
+        { name: "Pre-Primary 1 (PP1)", age: "4-5 years", focus: "Play-based learning, pre-reading, pre-writing, social skills" },
+        { name: "Pre-Primary 2 (PP2)", age: "5-6 years", focus: "Early numeracy, literacy foundations, creative expression" },
+        { name: "Grade 1", age: "6-7 years", focus: "Reading fluency, basic math operations, environmental awareness" },
+        { name: "Grade 2", age: "7-8 years", focus: "Writing skills, multiplication basics, community studies" },
+        { name: "Grade 3", age: "8-9 years", focus: "Fractions, grammar, Kenyan history introduction" },
+        { name: "Grade 4", age: "9-10 years", focus: "Decimals, essay writing, science experiments" },
+        { name: "Grade 5", age: "10-11 years", focus: "Percentages, advanced reading, Kenyan geography" },
+        { name: "Grade 6", age: "11-12 years", focus: "Ratios, literary analysis, KCPE preparation" },
+        { name: "Grade 7 (JSS 1)", age: "12-13 years", focus: "Algebra, composition writing, career guidance" },
+        { name: "Grade 8 (JSS 2)", age: "13-14 years", focus: "Geometry, research skills, entrepreneurship" },
+        { name: "Grade 9 (JSS 3)", age: "14-15 years", focus: "Statistics, critical analysis, KPSEA preparation" }
+      ];
 
-        // Update navigation links
-        updateNavigation();
-      });
-
-      function showPage(page) {
+      // Function to show different pages
+      function showPage(pageName) {
         // Hide all pages
-        document.querySelectorAll(".page-content").forEach((el) => {
-          el.style.display = "none";
+        document.querySelectorAll('.page-content').forEach(page => {
+          page.style.display = 'none';
         });
-
-        // Show the requested page
-        const pageElement = document.getElementById(`${page}-page`);
-        if (pageElement) {
-          pageElement.style.display = "block";
-        } else {
-          // Default to home if page not found
-          document.getElementById("home-page").style.display = "block";
+        
+        // Show selected page
+        const selectedPage = document.getElementById(`${pageName}-page`);
+        if (selectedPage) {
+          selectedPage.style.display = 'block';
+        }
+        
+        // Populate page content if needed
+        if (pageName === 'subjects') {
+          populateSubjectsPage();
+        } else if (pageName === 'grades') {
+          populateGradesPage();
+        } else if (pageName === 'games') {
+          populateAllGamesPage();
         }
       }
-
-      function updateNavigation() {
-        // Update navigation links to include page parameter
-        document.querySelectorAll(".nav-menu a").forEach((link) => {
-          const href = link.getAttribute("href");
-          if (href && !href.includes("#")) {
-            const pageName = href.replace(".html", "");
-            link.href = `?page=${pageName}`;
-          }
-        });
+      
+      function populateSubjectsPage() {
+        const grid = document.getElementById('subjectsGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = subjectsData.map(subject => `
+          <div class="resource-card">
+            <div class="resource-icon" style="background: ${subject.bg}">${subject.icon}</div>
+            <h3 class="resource-title">${subject.name}</h3>
+            <p class="resource-description">${subject.desc}</p>
+            <div style="color: #2e7d4a; margin-bottom: 1rem;">${subject.games} games • ${subject.worksheets} worksheets</div>
+            <button class="resource-button" onclick="showSubjectInfo('${subject.name}', '${subject.desc.replace(/'/g, "\\'")}', '${subject.games} games • ${subject.worksheets} worksheets')">Explore ${subject.name.split(' ')[0]}</button>
+          </div>
+        `).join('');
       }
+      
+      function populateGradesPage() {
+        const grid = document.getElementById('gradesGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = gradesData.map(grade => `
+          <div class="resource-card">
+            <div class="resource-icon" style="background: #e3f2fd">🎓</div>
+            <h3 class="resource-title">${grade.name}</h3>
+            <p class="resource-description"><strong>Ages:</strong> ${grade.age}</p>
+            <p class="resource-description"><strong>Focus:</strong> ${grade.focus}</p>
+            <button class="resource-button" onclick="alert('Grade ${grade.name} - ${grade.focus}')">Explore ${grade.name}</button>
+          </div>
+        `).join('');
+      }
+      
+      function populateAllGamesPage() {
+        const grid = document.getElementById('allGamesGrid');
+        if (!grid) return;
+        
+        const allGames = [
+          { title: "Hisabati Safari", subject: "Mathematics", grade: "Grade 1-3", desc: "Addition and subtraction safari adventure", icon: "🔢", bg: "#e3f2fd" },
+          { title: "Multiplication Maasai", subject: "Mathematics", grade: "Grade 3-5", desc: "Learn times tables with Maasai culture", icon: "✖️", bg: "#f3e5f5" },
+          { title: "Geometry Giraffes", subject: "Mathematics", grade: "Grade 4-6", desc: "Shapes and angles with Kenyan wildlife", icon: "📐", bg: "#e8f5e8" },
+          { title: "English Explorer", subject: "English", grade: "Grade 1-4", desc: "Reading comprehension with Kenyan stories", icon: "📚", bg: "#fff3e0" },
+          { title: "Grammar Safari", subject: "English", grade: "Grade 3-6", desc: "Grammar practice while exploring parks", icon: "✏️", bg: "#e1f5fe" },
+          { title: "Pronunciation Palace", subject: "English", grade: "All Grades", desc: "Voice recognition pronunciation practice", icon: "🗣️", bg: "#f9fbe7" }
+        ];
+        
+        grid.innerHTML = allGames.map(game => `
+          <div class="game-card">
+            <div class="game-icon" style="background: ${game.bg}">${game.icon}</div>
+            <h3 class="game-title">${game.title}</h3>
+            <p class="game-description">${game.desc}</p>
+            <div class="game-tags">
+              <span class="tag tag-grade">${game.grade}</span>
+              <span class="tag tag-subject">${game.subject}</span>
+            </div>
+            <button class="play-button" onclick="alert('Game starting: ${game.title}')">Play Now</button>
+          </div>
+        `).join('');
+      }
+      
+      function showSubjectInfo(name, desc, stats) {
+        document.getElementById('modalSubjectTitle').textContent = name;
+        document.getElementById('modalSubjectDesc').textContent = desc;
+        document.getElementById('modalSubjectStats').textContent = stats;
+        document.getElementById('subjectInfoModal').style.display = 'flex';
+      }
+      
+      function closeSubjectModal() {
+        document.getElementById('subjectInfoModal').style.display = 'none';
+      }
+      
+      // Filter functionality
+      function initializeFilters() {
+        const subjectFilters = document.querySelectorAll('.subject-filter');
+        const gradeFilters = document.querySelectorAll('.grade-filter');
+        
+        function filterGames() {
+          const selectedSubjects = Array.from(subjectFilters)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+          
+          const selectedGrades = Array.from(gradeFilters)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+          
+          const gameCards = document.querySelectorAll('.game-card');
+          
+          gameCards.forEach(card => {
+            const cardSubject = card.dataset.subject;
+            const cardGrade = card.dataset.grade;
+            
+            let subjectMatch = selectedSubjects.length === 0 || selectedSubjects.includes(cardSubject);
+            let gradeMatch = selectedGrades.length === 0 || selectedGrades.some(g => cardGrade.includes(g));
+            
+            card.style.display = (subjectMatch && gradeMatch) ? 'block' : 'none';
+          });
+        }
+        
+        subjectFilters.forEach(cb => cb.addEventListener('change', filterGames));
+        gradeFilters.forEach(cb => cb.addEventListener('change', filterGames));
+      }
+      
+      // Modal functions
+      function openSignInModal() {
+        document.getElementById('signInModal').style.display = 'flex';
+      }
+      
+      function closeSignInModal() {
+        document.getElementById('signInModal').style.display = 'none';
+      }
+      
+      function requestNewCode() {
+        document.getElementById('signInStep').style.display = 'none';
+        document.getElementById('verifyCodeStep').style.display = 'block';
+      }
+      
+      function showPaymentInfo() {
+        document.getElementById('signInStep').style.display = 'none';
+        document.getElementById('paymentInfoStep').style.display = 'block';
+      }
+      
+      function backToSignIn() {
+        document.getElementById('signInStep').style.display = 'block';
+        document.getElementById('verifyCodeStep').style.display = 'none';
+        document.getElementById('paymentInfoStep').style.display = 'none';
+      }
+      
+      // Sign in form submission
+      document.getElementById('signInForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const phoneOrEmail = document.getElementById('phoneOrEmail').value;
+        const accessCode = document.getElementById('accessCode').value;
+        
+        if (phoneOrEmail && accessCode.length === 6) {
+          // Successful sign in - show main app
+          document.getElementById('landing-page').style.display = 'none';
+          document.getElementById('mainApp').style.display = 'block';
+          closeSignInModal();
+        } else {
+          alert('Please enter valid details and 6-digit code');
+        }
+      });
+      
+      document.getElementById('paymentSubmissionForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Payment information submitted! Admin will process and send access code within 24 hours.');
+        backToSignIn();
+      });
+      
+      // Initialize on load
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeFilters();
+        populateSubjectsPage();
+        populateGradesPage();
+        
+        // Set up navigation clicks
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const pageName = this.textContent.trim().toLowerCase().replace(' ', '');
+            if (pageName === 'home') showPage('home');
+            else if (pageName === 'subjects') showPage('subjects');
+            else if (pageName === 'grades') showPage('grades');
+            else if (pageName === 'games') showPage('games');
+          });
+        });
+      });
     </script>
   </body>
 </html>
